@@ -12,7 +12,9 @@ jobs:
           upload: true
 # Add below this line, do not modify above
       - store_test_results:
-          path: ~/project/results/test_results.xml
+          path: ~/project/results/
+      - store_artifacts:
+          path: ~/project/results/    
           
 workflows:
   results:
