@@ -13,3 +13,9 @@ jobs:
 # Add below this line, do not modify above
       - store_test_results:
           path: ~/project/results/test_results.xml
+          
+workflows:
+  results:
+    jobs:
+      - build
+     
