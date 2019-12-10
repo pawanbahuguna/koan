@@ -1,20 +1,15 @@
-version: 2
+version: 2.1
+orbs:
+  build-tools: circleci/build-tools@2.2.0 # This is an orb. If you are not yet familiar with orbs, we will go over them soon. Orbs allow us to make our configs shorter by allowing us to "import" config in a similar way to a programming language's package manager.
 jobs:
-  test:
-    docker:
-      - image: circleci/node
-    parallelism: 2  
+  build:
+    docker: 
+      - image: circleci/node 
     steps:
-      - checkout
-      # These two tests should run in parallel. Make it so!
-      - run:
-          name: Run Hello test
-          command: |
-            circleci tests glob "src/test_*.sh" | circleci tests split --split-by=timings > /tmp/test_run
-            bundle exec bash $(cat /tmp/test_run)
-            
-workflows:
-  version: 2
-  test:
-    jobs:
-      - test
+      - build-tools/test-results:
+          name: Generating test results.
+          data-dir: ~/project/results
+          upload: true
+# Add below this line, do not modify above
+      - store_test_results:
+          path: ~/project/results/test_results.xml
