@@ -3,6 +3,10 @@ jobs:
   build:
     docker:
       - image: circleci/node
+      
+      - image: postgres:9.4.1
+      
+      
     steps:
       - checkout # check out the code in the project directory
       - run: 
