@@ -10,8 +10,8 @@ jobs:
       - run:
           name: Run Hello test
           command: |
-            circleci tests glob "src/test_*.sh" | circleci tests split --split-by=timings
-            bash src/test_*.sh
+            circleci tests glob "src/test_*.sh" | circleci tests split --split-by=timings > /tmp/test_run
+            bundle exec bash $(cat /tmp/test_run)
             
 workflows:
   version: 2
