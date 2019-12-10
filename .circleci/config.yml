@@ -10,14 +10,9 @@ jobs:
       - run:
           name: Run Hello test
           command: |
-            touch src/test_hello.sh
-            circleci tests glob "**/*.sh" | circleci tests split --split-by=timings
-            bash src/test_hello.sh
-      - run:
-          name: Run Goodbye test
-          command: |
-            touch src/test_goodbye.sh
-            bash src/test_goodbye.sh
+            circleci tests glob "src/test_*.sh" | circleci tests split --split-by=timings
+            bash src/test_*.sh
+            
 workflows:
   version: 2
   test:
