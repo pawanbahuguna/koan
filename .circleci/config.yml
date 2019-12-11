@@ -13,7 +13,7 @@ jobs:
             echo $(circleci tests glob "src/test_*.sh")
             circleci tests glob "src/test_*.sh" | xargs -n 1 echo
             circleci tests glob "src/test_*.sh" | circleci tests split > ~/tests-to-run
-            bundle exec rspec $(bash ~/tests-to-run)
+            bash ~/tests-to-run
            
 workflows:
   version: 2
