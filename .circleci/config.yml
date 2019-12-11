@@ -12,7 +12,9 @@ jobs:
           command: |
             echo $(circleci tests glob "src/test_*.sh")
             circleci tests glob "src/test_*.sh" | xargs -n 1 echo
-            
+  test2:
+    docker:
+      - image: circle/node
       - run:
           name: Run Goodbye test
           command: |
