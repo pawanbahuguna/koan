@@ -12,13 +12,9 @@ jobs:
           command: |
             echo $(circleci tests glob "src/test_*.sh")
             circleci tests glob "src/test_*.sh" | xargs -n 1 echo
-  test2:
-    docker:
-      - image: circle/node
-      - run:
-          name: Run Goodbye test
-          command: |
-            bash src/test_goodbye.sh
+            circleci tests glob "src/test_*.sh" | circleci tests split > ~/tests-to-run
+            bundle exec rspec $(bash ~/tests-to-run)
+           
 workflows:
   version: 2
   test:
