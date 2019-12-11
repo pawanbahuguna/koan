@@ -1,46 +1,24 @@
-version: 2.1
-executors:
-  custom-node:
+version: 2
+jobs:
+  test:
     docker:
       - image: circleci/node
-      
-commands:
-  generatelogs:
-    description: "A command to generate a log file"
-    parameters:
-      path:
-        type: string
-        default: "~/project/"
+    parallelism: 2  
     steps:
-      - run: echo "Log file" > <<parameters.path>>/log.txt
-  endmission:
-    description: "Use the parameters of this command to exit this mission with a green build."
-    parameters:
-      exitCode:
-        type: integer
-        default: 0
-    steps:
-      - run: exit <<parameters.exitCode>>
-
-jobs:
-  orb-intro:
-    executor: custom-node
-    steps:
-      - run: echo "console.log('complete')" | node
-      - generatelogs
+      - checkout
+      # These two tests should run in parallel. Make it so!
       - run:
-          name: Check for logs - DO NOT MODIFY
+          name: Run Hello test
           command: |
-            if [ ! -f ~/project/log.txt ]; then
-              echo "The log should exist at ~/project/log.txt after running the 'generatelogs' command"
-              exit 1
-            fi
-      - endmission
-
-
-
+            echo $(circleci tests glob "src/test_*.sh")
+            circleci tests glob "src/test_*.sh" | xargs -n 1 echo
+            bundle exec bash src/test_hello.sh
+      - run:
+          name: Run Goodbye test
+          command: |
+            bash src/test_goodbye.sh
 workflows:
   version: 2
-  orb-intro-workflow:
+  test:
     jobs:
-      - orb-intro
+      - test
