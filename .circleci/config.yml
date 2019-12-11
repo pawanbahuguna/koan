@@ -1,66 +1,42 @@
 version: 2.1
+
+commands:
+  generatelogs:
+    description: "A command to generate a log file"
+    parameters:
+      path:
+        type: string
+        default: "~/randomfolder"
+    steps:
+      - run: echo "Log file" > <<parameters.path>>/log.txt
+  endMission:
+    description: "Use the parameters of this command to exit this mission with a green build."
+    parameters:
+      exitCode:
+        type: integer
+        default: 1
+    steps:
+      - run: exit <<parameters.exitCode>>
+
 jobs:
-  build-linux:
-    docker:
-      - image: node
+  orb-intro:
+    executor: custom-node
     steps:
-        - run: mkdir -p app/linux
-        - run:
-            name: Generate app
-            command: echo app >> app/linux/app.linux
-        - run: cd ~/project/app && pwd && ls
-          # Edit below here
-        - persist_to_workspace: 
-            root: app
-            paths: linux
+      - run: echo "console.log('complete')" | node
+      - generatelogs
+      - run:
+          name: Check for logs - DO NOT MODIFY
+          command: |
+            if [ ! -f ~/project/log.txt ]; then
+              echo "The log should exist at ~/project/log.txt after running the 'generatelogs' command"
+              exit 1
+            fi
+      - endMission
 
-  build-windows:
-    docker:
-      - image: node # use your imagination, using all linux/docker for ease-of-use
-    steps:
-        - run: mkdir -p app/windows
-        - run:
-            name: Generate app
-            command: echo app >> app/windows/app.windows
-        - run: cd ~/project/app && pwd && ls
-          # Edit below here
-        - persist_to_workspace: 
-            root: app
-            paths: windows
 
-  build-mac:
-      docker:
-        - image: node # use your imagination, using all linux/docker for ease-of-use
-      steps:
-        - run: mkdir -p app/mac
-        - run:
-            name: Generate app
-            command: echo app >> app/mac/app.mac
-        - run: cd ~/project/app && pwd && ls
-          # Edit below here
-        - persist_to_workspace: 
-            root: app
-            paths: mac
-
-  deploy:
-      docker:
-        - image: node
-      steps:
-        - attach_workspace:
-            at: ~/project/app
-        - store_artifacts: # See circleci.com/docs/2.0/artifacts/ for more details.
-            path: app
-            destination: apps
 
 workflows:
   version: 2
-  build_and_deploy:
+  orb-intro-workflow:
     jobs:
-      - build-linux
-      - build-mac
-      - build-windows
-      - deploy:
-          requires:
-            - build-linux
-            - build-mac
-            - build-windows
+      - orb-intro
