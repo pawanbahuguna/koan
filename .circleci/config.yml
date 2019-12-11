@@ -10,7 +10,7 @@ commands:
     parameters:
       path:
         type: string
-        default: "~/randomfolder"
+        default: "~/project/"
     steps:
       - run: echo "Log file" > <<parameters.path>>/log.txt
   endmission:
